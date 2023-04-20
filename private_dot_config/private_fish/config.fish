@@ -2,21 +2,57 @@ fish_add_path /opt/homebrew/bin
 fish_add_path "$HOME/.cargo/bin"
 set PATH "$PATH:$HOME/git/scripts"
 
+set -gx fish_greeting # Supresses fish's intro message
+set -gx SHELL fish
+set -gx OS (uname)
+
 # Personal; Prod
-set -gx BWS_ACCESS_TOKEN (security find-generic-password -w -s 'testpass' -a "$USER")
 if status is-interactive
     # ask for input to see if we should fetch data
     printf '%s\n' 'Fetch data? [Y/n]'
     read -l response
+    if test "$OS" = Darwin
+        # variable scoping is frustrating in shell languages; have to set the var in this if block,
+        # rather than the lower-level ones for the script in line 43
+        set -gx BWS_ACCESS_TOKEN (security find-generic-password -w -s 'BWS_ACCESS_TOKEN' -a "$USER")
+    end
+    if test "$OS" = Linux; and test (which ph)
+        # settle on a way to get BWS_ACCESS_TOKEN on Linux
+        set -gx BWS_ACCESS_TOKEN (ph show BWS_ACCESS_TOKEN --field password) || \
+            set -gx BWS_ACCESS_TOKEN (pass show BWS_ACCESS_TOKEN) || \
+            printf '%s\n' 'BWS_ACCESS_TOKEN not found; please enter it:'; \
+            read -gx BWS_ACCESS_TOKEN
+    end
     if test "$response" != n
+        if test "$OS" = Darwin; and not test (which bws)
+            set -l VERSION (curl -s https://api.github.com/repos/bitwarden/sdk/releases/latest | jq -r '.tag_name' | sed 's/bws-v//g')
+            pushd /tmp || exit
+            curl -sLO "https://github.com/bitwarden/sdk/releases/download/bws-v$VERSION/bws-macos-universal-$VERSION.zip"
+            unzip -q "bws-macos-universal-$VERSION.zip"
+            sudo chmod +x bws-macos-universal/bws
+            sudo mv bws-macos-universal/bws /usr/local/bin && echo "Installed bws"
+            popd || exit
+        end
+        if test "$OS" = Linux; and not test (which bws)
+            set -l VERSION (curl -s https://api.github.com/repos/bitwarden/sdk/releases/latest | jq -r '.tag_name' | sed 's/bws-v//g')
+            pushd /tmp || exit
+            curl -sLO "https://github.com/bitwarden/sdk/releases/download/bws-v$VERSION/bws-x86_64-unknown-linux-gnu-$VERSION.zip"
+            unzip -q "bws-x86_64-unknown-linux-gnu-$VERSION.zip"
+            sudo chmod +x bws
+            sudo mv bws /usr/local/bin && echo "Installed bws"
+            popd || exit
+        end
         printf '%s\n' 'Fetching data...'
         . ($HOME/.config/fish/scripts/bws_secrets --shell fish get | psub)
     end
 end
 
+
 set -gx ANDROID_SDK_ROOT /$HOME/Library/Android/sdk
 set -gx ANDROID_NDK_HOME /opt/homebrew/share/android-ndk
-set -gx JAVA_HOME (/usr/libexec/java_home)
+if test -x /usr/libexec/java_home
+    set -gx JAVA_HOME (/usr/libexec/java_home)
+end
 
 set -gx HOST $hostname
 set -gx CRON_SCHEDULE "0 0 1 * *"
@@ -32,17 +68,16 @@ set -gx BW_SERVE_URL "http://127.0.0.1:2929"
 #set BW_RESPONSE "true" # https://github.com/bitwarden/clients/blob/80f5a883e088e941c415f224d1fa7af3dc2b6cd7/apps/cli/src/services/console-log.service.spec.ts#L20
 set -gx BW_PRETTY true
 
-switch (uname)
+switch $OS
     case Darwin
         set -gx CONFIG "$HOME/Library/Application Support/"
     case Linux
         set -gx CONFIG "$HOME/.config/"
     case '*'
-        printf "%s" "Uh-oh! Stinky Windows!"
+        printf "%s\n" "Uh-oh! Stinky Windows!"
 end
 
 ### EXPORT ###
-set -gx fish_greeting # Supresses fish's intro message
 set -gx TERM xterm-256color # Sets the terminal type
 #set EDITOR "emacsclient -t -a ''"                 # $EDITOR use Emacs in terminal
 
@@ -231,7 +266,7 @@ alias yta-vorbis="yt-dlp --extract-audio --audio-format vorbis "
 alias yta-wav="yt-dlp --extract-audio --audio-format wav "
 alias ytv-best="yt-dlp -f bestvideo+bestaudio "
 
-alias bashly='docker run --rm -it --user $(id -u):$(id -g) --volume "$PWD:/app" dannyben/bashly'
+alias bashly='docker run --rm -it --user (id -u):(id -g) --volume "$PWD:/app" dannyben/bashly'
 # Start X at login
 if status is-login
     if test -z "$DISPLAY" -a "$XDG_VTNR" = 1
@@ -240,10 +275,17 @@ if status is-login
 end
 
 ### SETTING THE STARSHIP PROMPT ###
-starship init fish | source
+if command -s starship >/dev/null
+    # set the starship prompt
+    starship init fish | source
+end
 
 ### MANAGED BY RANCHER DESKTOP START (DO NOT EDIT)
 set --export --prepend PATH "/$HOME/.rd/bin"
 ### MANAGED BY RANCHER DESKTOP END (DO NOT EDIT)
 
-source ~/.config/fish/completions/*
+if test -n "$fish_complete_path" -a -d "$fish_complete_path"
+    for file in $fish_complete_path/*
+        source $file
+    end
+end
