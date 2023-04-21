@@ -1,0 +1,13 @@
+# Description: These are matches for my very specific QMK configuration;
+# likely not useful to anyone else.
+matches:
+  - trigger: ":plus"
+    replace: +
+  - trigger: "bougie"
+    replace: "bourgeoisie"
+  - trigger: "your '"
+    replace: "you're "
+  - trigger: "organization organizations "
+    replace: "organizations "
+    propagate_case: true
+    word: true

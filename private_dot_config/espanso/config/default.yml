@@ -1,0 +1,8 @@
+auto_restart: true
+show_notifications: false
+# inject_delay: 6
+# key_delay: 5
+backend: Auto # Inject
+#disable_x11_fast_inject: true
+search_shortcut: off
+macos_override_path: ~/.rd/bin:~/.cargo/bin:~/.cargo:/opt/homebrew/bin:~/.local/bin:~/Applications:~/Android/Sdk/platform-tools:~/.nix-profile/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin:/usr/local/share/dotnet:~/.dotnet/tools:/Library/Frameworks/Mono.framework/Versions/Current/Commandsn

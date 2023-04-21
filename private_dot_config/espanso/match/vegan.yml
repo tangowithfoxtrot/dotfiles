@@ -1,0 +1,7 @@
+# handy for pro-carnist """arguments"""
+matches:
+  - trigger: ";milk"
+    replace: |-
+      The term "milk" is an old chemistry term referring to a "heterogeneous mixture of insoluble compounds". "Colloid" is the modern term.
+      Think "milk of magnesia", which is used as an antacid. It is called a milk because the Mg(OH)2 doesn't dissolve and just forms a suspension. Almond milk is a suspension of ground up almond particles. Cow milk is a suspension of fat particles that won't dissolve. This is why milk is homogenized: because it wants to form a floating fat layer and water layer. That's unappealing so they fake making it look the same throughout. It is not a homogeneous solution.
+      So anything you can mix up in water that doesn't dissolve and it stays suspended is "milk".

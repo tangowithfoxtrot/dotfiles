@@ -1,0 +1,16 @@
+# Description: Common Kubernetes object templates
+matches:
+  - trigger: kubepod
+    replace: "apiVersion: v1\nkind: Pod\nmetadata:\n  name: myapp-pod\n  labels:\n    app: myapp\n    type: front-end\nspec:\n  containers:\n    - name: nginx-container\n      image: nginx\n      volumeMounts:\n      - mountPath: /usr/share/nginx\n        name: data-volume\n  volumes:\n  - name: data-volume\n    persistentVolumeClaim:\n      claimName: data-volume\n"
+  - trigger: kuberep
+    replace: "apiVersion: apps/v1\nkind: ReplicaSet\nmetadata:\n  name: myapp-replicaset\n  labels:\n    app: myapp\n    type: front-end\nspec:\n  template:\n    metadata:\n      name: myapp-pod\n      labels:\n        app: myapp\n        type: front-end\n    spec:\n      containers:\n        - name: nginx-container\n          image: nginx\n  replicas: 3\n  selector:\n    matchLabels:\n      type: front-end\n"
+  - trigger: kubedep
+    replace: "apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: nginx-deployment\n  labels:\n    app: nginx\nspec:\n  replicas: 3\n  selector:\n    matchLabels:\n      app: nginx\n  template:\n    metadata:\n      labels:\n        app: nginx\n    spec:\n      containers:\n      - name: nginx\n        image: nginx:1.14.2\n        ports:\n        - containerPort: 80\n"
+  - trigger: kubev
+    replace: "apiVersion: v1\nkind: PersistentVolume\nmetadata:\n  name: pv-vol1\nspec:\n  accessModes:\n    - ReadWriteOnce\n  capacity:\n    storage: 500Mi\n  hostPath:\n    path: /mnt\n"
+  - trigger: kubepvc
+    replace: "apiVersion: v1\nkind: PersistentVolumeClaim\nmetadata:\n  name: data-volume\nspec:\n  accessModes:\n    - ReadWriteOnce\n  resources:\n    requests:\n      storage: 500Mi\n"
+  - trigger: kuberole
+    replace: "apiVersion: rbac.authorization.k8s.io/v1\nkind: Role\nmetadata:\n  namespace: default\n  name: pod-reader\nrules:\n- apiGroups: [\"\"] # \"\" indicates the core API group\n  resources: [\"pods\"]\n  verbs: [\"get\", \"watch\", \"list\"]\n"
+  - trigger: kuberbac
+    replace: "apiVersion: rbac.authorization.k8s.io/v1\n # This role binding allows \"jane\" to read pods in the \"default\" namespace.\n # You need to already have a Role named \"pod-reader\" in that namespace.\n kind: RoleBinding\n metadata:\n   name: read-pods\n   namespace: default\n subjects:\n # You can specify more than one \"subject\"\n - kind: User\n   name: jane # \"name\" is case sensitive\n   apiGroup: rbac.authorization.k8s.io\n roleRef:\n   # \"roleRef\" specifies the binding to a Role / ClusterRole\n   kind: Role #this must be Role or ClusterRole\n   name: pod-reader # this must match the name of the Role or ClusterRole you wish to bind to\n   apiGroup: rbac.authorization.k8s.io\n"
