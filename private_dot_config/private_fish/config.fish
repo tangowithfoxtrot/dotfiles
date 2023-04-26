@@ -5,6 +5,8 @@ set PATH "$PATH:$HOME/git/scripts"
 set -gx fish_greeting # Supresses fish's intro message
 set -gx SHELL fish
 set -gx OS (uname)
+set -gx PUID (id -u)
+set -gx PGID (id -g)
 
 # Personal; Prod
 if status is-interactive
@@ -18,9 +20,7 @@ if status is-interactive
     end
     if test "$OS" = Linux; and test (which ph)
         # settle on a way to get BWS_ACCESS_TOKEN on Linux
-        set -gx BWS_ACCESS_TOKEN (ph show BWS_ACCESS_TOKEN --field password) || \
-            set -gx BWS_ACCESS_TOKEN (pass show BWS_ACCESS_TOKEN) || \
-            printf '%s\n' 'BWS_ACCESS_TOKEN not found; please enter it:'; \
+        set -gx BWS_ACCESS_TOKEN (ph show BWS_ACCESS_TOKEN --field password) || set -gx BWS_ACCESS_TOKEN (pass show BWS_ACCESS_TOKEN) || printf '%s\n' 'BWS_ACCESS_TOKEN not found; please enter it:'
             read -gx BWS_ACCESS_TOKEN
     end
     if test "$response" != n

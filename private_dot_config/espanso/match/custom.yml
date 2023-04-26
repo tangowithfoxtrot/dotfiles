@@ -27,6 +27,8 @@ matches:
         type: shell
         params:
           cmd: "git config --global --get user.name"
+  - trigger: ";search"
+    replace: "site:reddit.com site:github.com related:stackoverflow.com"
   - trigger: ";shebang"
     replace: "#!/usr/bin/env "
   - trigger: ";rand"
