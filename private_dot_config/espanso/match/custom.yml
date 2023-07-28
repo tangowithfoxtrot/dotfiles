@@ -31,6 +31,17 @@ matches:
     replace: "site:reddit.com site:github.com related:stackoverflow.com"
   - trigger: ";shebang"
     replace: "#!/usr/bin/env "
+  - trigger: ";bash"
+    replace: |
+      #!/usr/bin/env bash
+
+      set -euo pipefail
+      IFS=$'\n\t'
+
+  - trigger: ";strict"
+    replace: |
+      set -euo pipefail
+      IFS=$'\n\t'
   - trigger: ";rand"
     replace: "{{output}}"
     vars:

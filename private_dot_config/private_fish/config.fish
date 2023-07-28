@@ -1,6 +1,6 @@
-fish_add_path /opt/homebrew/bin
+# fish_add_path /opt/homebrew/bin
 fish_add_path "$HOME/.cargo/bin"
-set PATH "$PATH:$HOME/git/scripts"
+set PATH "/opt/homebrew/bin:$PATH:$HOME/git/scripts"
 
 set -gx fish_greeting # Supresses fish's intro message
 set -gx SHELL fish
@@ -17,11 +17,12 @@ if status is-interactive
         # variable scoping is frustrating in shell languages; have to set the var in this if block,
         # rather than the lower-level ones for the script in line 43
         set -gx BWS_ACCESS_TOKEN (security find-generic-password -w -s 'BWS_ACCESS_TOKEN' -a "$USER")
+        set -gx QA_BWS_ACCESS_TOKEN (security find-generic-password -w -s 'WORK_BWS_ACCESS_TOKEN' -a "$USER")
     end
     if test "$OS" = Linux; and test (which ph)
         # settle on a way to get BWS_ACCESS_TOKEN on Linux
         set -gx BWS_ACCESS_TOKEN (ph show BWS_ACCESS_TOKEN --field password) || set -gx BWS_ACCESS_TOKEN (pass show BWS_ACCESS_TOKEN) || printf '%s\n' 'BWS_ACCESS_TOKEN not found; please enter it:'
-            read -gx BWS_ACCESS_TOKEN
+        read -gx BWS_ACCESS_TOKEN
     end
     if test "$response" != n
         if test "$OS" = Darwin; and not test (which bws)
@@ -54,6 +55,7 @@ if test -x /usr/libexec/java_home
     set -gx JAVA_HOME (/usr/libexec/java_home)
 end
 
+set -gx BITWARDENCLI_DEBUG true
 set -gx HOST $hostname
 set -gx CRON_SCHEDULE "0 0 1 * *"
 set -gx PHONE "192.168.1.10"
@@ -63,7 +65,7 @@ set -gx NATIVEFIER_APPS_DIR /Applications/
 
 set -gx TELEMETRY_ENABLED false # infisical
 set -gx TUNNEL_ORIGIN_CERT "/$HOME/.cloudflared/cert.pem"
-set -gx BW_SERVE_URL "http://127.0.0.1:2929"
+set -gx BW_SERVE_URL "http://127.0.0.1:8087"
 
 #set BW_RESPONSE "true" # https://github.com/bitwarden/clients/blob/80f5a883e088e941c415f224d1fa7af3dc2b6cd7/apps/cli/src/services/console-log.service.spec.ts#L20
 set -gx BW_PRETTY true
@@ -106,7 +108,7 @@ set -gx MANPAGER "sh -c 'col -bx | bat -l man -p --theme Dracula'"
 
 ### "moar" as manpager and pager
 # set -gx MANPAGER "moar -no-clear-on-exit -no-statusbar -style dracula"
-set -gx PAGER "moar -no-clear-on-exit -no-statusbar -style dracula"
+set -gx PAGER "moar -no-clear-on-exit -no-linenumbers -no-statusbar -style dracula"
 
 ### "vim" as manpager
 # set -gx MANPAGER '/bin/bash -c "vim -MRn -c \"set buftype=nofile showtabline=0 ft=man ts=8 nomod nolist norelativenumber nonu noma\" -c \"normal L\" -c \"nmap q :qa <CR >\" </dev/tty <(col -b)"'

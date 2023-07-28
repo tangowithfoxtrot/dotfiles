@@ -2,48 +2,48 @@ global_vars:
   - name: api_host
     type: echo
     params:
-      echo: http://127.0.0.1:2929
+      echo: http://127.0.0.1:8087
 
 matches:
-  - trigger: ";pass" # fill a specific item
-    replace: "{{output}}"
-    vars:
-      - name: output
-        type: shell
-        params:
-          shell: zsh
-          cmd: |-
-            echo $(curl -sX 'GET' '{{api_host}}/object/item/5310c27b-e7d7-4721-bdc1-ad79015d73ae' | jq -r '.data.fields[3]? | select(.value) | .value')
-  - regex: "(u|U)\\((?P<item>.*)\\)" # fill a username with u(item_name) or U(item_name)
-    replace: "{{bw_usename}}"
-    vars:
-      - name: bw_usename
-        type: shell
-        params:
-          shell: zsh
-          cmd: |-
-            echo $(curl -sX 'GET' '{{api_host}}/list/object/items' | jq -r '.data.data[] | select(.name | ascii_downcase == "{{item}}") | .login.username')
-  - regex: "(p|P)\\((?P<item>.*)\\)" # fill a password with p(item_name) or P(item_name)
-    replace: "{{bw_pass}}"
-    vars:
-      - name: bw_pass
-        type: shell
-        params:
-          shell: zsh
-          cmd: |-
-            echo $(curl -sX 'GET' '{{api_host}}/list/object/items' | jq -r '.data.data[] | select(.name | ascii_downcase == "{{item}}") | .login.password')
-  - regex: "(t|T)\\((?P<item>.*)\\)" # fill a totp with t(item_name) or T(item_name)
-    replace: "{{bw_totp}}"
-    vars:
-      - name: id
-        type: shell
-        params:
-          shell: zsh
-          cmd: |-
-            echo $(curl -sX 'GET' '{{api_host}}/list/object/items' | jq -r '.data.data[] | select(.name | ascii_downcase == "{{item}}") | .id')
-      - name: bw_totp
-        type: shell
-        params:
-          shell: zsh
-          cmd: |-
-            echo $(curl -sX 'GET' '{{api_host}}/object/totp/{{id}}' | jq -r '.data.data')
+  # - trigger: ";pass" # fill a specific item
+  #   replace: "{{output}}"
+  #   vars:
+  #     - name: output
+  #       type: shell
+  #       params:
+  #         shell: zsh
+  #         cmd: |-
+  #           echo $(curl -sX 'GET' '{{api_host}}/object/item/5310c27b-e7d7-4721-bdc1-ad79015d73ae' | jq -r '.data.fields[3]? | select(.value) | .value')
+  # - regex: "(u|U)\\((?P<item>.*)\\)" # fill a username with u(item_name) or U(item_name)
+  #   replace: "{{bw_usename}}"
+  #   vars:
+  #     - name: bw_usename
+  #       type: shell
+  #       params:
+  #         shell: zsh
+  #         cmd: |-
+  #           echo $(curl -sX 'GET' '{{api_host}}/list/object/items' | jq -r '.data.data[] | select(.name | ascii_downcase == "{{item}}") | .login.username')
+  # - regex: "(p|P)\\((?P<item>.*)\\)" # fill a password with p(item_name) or P(item_name)
+  #   replace: "{{bw_pass}}"
+  #   vars:
+  #     - name: bw_pass
+  #       type: shell
+  #       params:
+  #         shell: zsh
+  #         cmd: |-
+  #           echo $(curl -sX 'GET' '{{api_host}}/list/object/items' | jq -r '.data.data[] | select(.name | ascii_downcase == "{{item}}") | .login.password')
+  # - regex: "(t|T)\\((?P<item>.*)\\)" # fill a totp with t(item_name) or T(item_name)
+  #   replace: "{{bw_totp}}"
+  #   vars:
+  #     - name: id
+  #       type: shell
+  #       params:
+  #         shell: zsh
+  #         cmd: |-
+  #           echo $(curl -sX 'GET' '{{api_host}}/list/object/items' | jq -r '.data.data[] | select(.name | ascii_downcase == "{{item}}") | .id')
+  #     - name: bw_totp
+  #       type: shell
+  #       params:
+  #         shell: zsh
+  #         cmd: |-
+  #           echo $(curl -sX 'GET' '{{api_host}}/object/totp/{{id}}' | jq -r '.data.data')
