@@ -1,0 +1,44 @@
+add_newline = true
+shell.fish_indicator = "🐟"
+
+[character]
+error_symbol = "[λ](bold #ff5555)"
+success_symbol = "[λ](bold #50fa7b)"
+
+[cmd_duration]
+style = "bold #f1fa8c"
+format = '[⏱ $duration]($style)'
+
+[container]
+disabled = true
+
+[custom.bash]
+command = "echo $ " 
+when = """ test "$STARSHIP_SHELL" "==" "bash" """
+format = " [$output](bold green)"
+
+[custom.env]
+shell = "bash"
+when = """ find . -maxdepth 1 -type f -name "*.env" | grep env && echo true """
+format = '[.env](dimmed green)'
+
+[custom.fish]
+command = "echo 🐟 "
+when = """ test "$STARSHIP_SHELL" = "fish" """
+format = " $output"
+
+[custom.zsh]
+command = "echo 🚀 "
+when = """ test "$STARSHIP_SHELL" "==" "zsh" """
+format = " $output"
+
+[directory]
+style = "bold #bd93f9"
+read_only = ""
+
+[git_branch]
+style = "bold #50fa7b"
+format = 'on [$branch(:$remote_branch)]($style) '
+
+[git_status]
+disabled = true
