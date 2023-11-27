@@ -15,7 +15,7 @@ disabled = true
 [custom.bash]
 command = "echo $ " 
 when = """ test "$STARSHIP_SHELL" "==" "bash" """
-format = " [$output](bold green)"
+format = "[$output](bold green)"
 
 [custom.env]
 shell = "bash"
@@ -25,12 +25,12 @@ format = '[.env](dimmed green)'
 [custom.fish]
 command = "echo 🐟 "
 when = """ test "$STARSHIP_SHELL" = "fish" """
-format = " $output"
+format = "$output"
 
 [custom.zsh]
 command = "echo 🚀 "
 when = """ test "$STARSHIP_SHELL" "==" "zsh" """
-format = " $output"
+format = "$output"
 
 [directory]
 style = "bold #bd93f9"
