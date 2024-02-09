@@ -21,8 +21,8 @@ enable = true
 
 [keys.normal]
 C-s = ":w" # Maps Ctrl-s to the typable command :w which is an alias for :write (save file)
-C-x = ":q" # Maps Ctrl-x to the typable command :q which is an alias for :quite (quit file)
+C-x = ":q" # Maps Ctrl-x to the typable command :q which is an alias for :quit (quit file)
 
 [keys.insert]
 C-s = ":w" # Maps Ctrl-s to the typable command :w which is an alias for :write (save file)
-C-x = ":q" # Maps Ctrl-x to the typable command :q which is an alias for :quite (quit file)
+C-x = ":q" # Maps Ctrl-x to the typable command :q which is an alias for :quit (quit file)
